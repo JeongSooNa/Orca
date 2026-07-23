@@ -1,0 +1,193 @@
+:root {
+    --bg-color: #f0f8ff;
+    --card-bg: #ffffff;
+    --primary-color: #0077be;
+    --primary-hover: #005f99;
+    --text-color: #333333;
+    --text-light: #666666;
+    --border-color: #b0e0e6;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* 좌우로 넓게 확장 (max-width 수정) */
+.container {
+    max-width: 1050px;
+    margin: 30px auto;
+    padding: 0 16px;
+}
+
+/* 헤더 스타일 */
+.app-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.app-header h1 {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 6px;
+}
+
+.app-header p {
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+/* 상단 내비게이션 바 스타일 (모바일 반응형 고려) */
+.app-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    background-color: var(--border-color);
+    padding: 8px;
+    border-radius: 12px;
+}
+
+.nav-btn {
+    flex: 1;
+    min-width: 130px;
+    background-color: transparent;
+    border: none;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-light);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    color: var(--primary-color);
+}
+
+.nav-btn.active {
+    background-color: var(--card-bg);
+    color: var(--primary-color);
+    box-shadow: 0 2px 6px rgba(0, 119, 190, 0.1);
+}
+
+/* 메인 콘텐츠 영역 스타일 */
+.app-main {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 28px;
+    min-height: 400px;
+    box-shadow: 0 4px 12px rgba(0, 119, 190, 0.08);
+    border: 1px solid var(--border-color);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h2 {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    margin-bottom: 16px;
+}
+
+/* 안내 텍스트 스타일 */
+.guide-text {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+/* 텅 빈 박스 스타일 */
+.empty-box {
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 50px 20px;
+    text-align: center;
+    color: var(--text-light);
+    background-color: #f7fcff;
+    font-size: 1rem;
+}
+
+/* 테이블 반응형 스크롤 감싸개 */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 10px;
+}
+
+/* 테이블 스타일 */
+.campaign-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: center;
+    background-color: var(--card-bg);
+    white-space: nowrap; /* 모바일에서 텍스트 줄바꿈 방지 및 스크롤 유도 */
+}
+
+.campaign-table th, .campaign-table td {
+    padding: 12px 10px;
+    border: 1px solid #7bc8e2;
+}
+
+.campaign-table th {
+    background-color: #d0e8fc;
+    color: var(--primary-color);
+    font-weight: 700;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.campaign-table tr:nth-child(even) {
+    background-color: #eaf4fc; 
+}
+
+.campaign-table tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.campaign-table tr:hover {
+    background-color: #d8eeff;
+}
+
+/* 푸터 스타일 */
+.app-footer {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 30px;
+}
+
+/* 모바일 화면 최적화 (768px 이하) */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px auto;
+        padding: 0 10px;
+    }
+
+    .app-main {
+        padding: 16px;
+    }
+
+    .app-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .nav-btn {
+        flex: 1 1 calc(50% - 8px); /* 모바일에서는 버튼을 2개씩 배치 */
+        min-width: auto;
+    }
+}
