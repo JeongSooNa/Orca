@@ -411,11 +411,11 @@
       </section>
 
       <!-- 계산 항목 2 -->
-<!-- 드론 부품 소모량 (계산 항목 2) -->
+      <!-- 드론 부품 소모량 (계산 항목 2) -->
       <section id="calc-2" class="tab-content">
         <h2>🛸 드론 부품 레벨별 소모량</h2>
         <p class="guide-text" style="margin-bottom: 12px;">* 150레벨 이후부터는 매 레벨마다 부품이 소모됩니다.</p>
-        
+
         <div class="table-responsive">
           <table class="campaign-table">
             <thead>
@@ -538,11 +538,97 @@
         </div>
       </section>
 
-      <!-- 계산 항목 3 -->
+      <!-- 전속무기 조각 소모량 계산기 (계산 항목 3) -->
       <section id="calc-3" class="tab-content">
-        <h2>🌊 계산 항목 3</h2>
-        <div class="empty-box">
-          텅 빈 계산 창입니다.
+        <h2>⚔️ 전속무기 강화 조각 계산기</h2>
+        <p class="guide-text" style="margin-bottom: 20px;">원하는 레벨 구간을 선택하여 필요 조각 수량을 계산하세요.</p>
+
+        <!-- 계산기 컨트롤 영역 -->
+        <div class="calc-controls">
+          <div class="calc-field">
+            <label for="from-level">From Level</label>
+            <select id="from-level" class="calc-select">
+              <!-- JS를 통해 동적으로 옵션 생성 또는 직접 입력 가능 -->
+            </select>
+          </div>
+
+          <div class="calc-field">
+            <label for="to-level">To Level</label>
+            <select id="to-level" class="calc-select">
+              <!-- JS를 통해 동적으로 옵션 생성 -->
+            </select>
+          </div>
+
+          <div class="calc-checkbox-field">
+            <label class="checkbox-label">
+              <input type="checkbox" id="include-unlock"> Include Weapon Unlock Cost (0레벨 해제 비용 포함)
+            </label>
+          </div>
+        </div>
+
+        <!-- 결과 출력 박스 -->
+        <div class="calc-result-box">
+          <p id="result-title">Total Shards Required for Levels 0 to 30</p>
+          <div id="result-value" class="result-number">2.88k</div>
+        </div>
+
+        <!-- 참고용 전체 테이블 (옵션) -->
+        <div class="table-responsive" style="margin-top: 30px;">
+          <h3 style="font-size: 1.1rem; color: var(--primary-color); margin-bottom: 10px;">📊 구간별 상세 데이터 참고</h3>
+          <table class="campaign-table">
+            <thead>
+              <tr>
+                <th>Level Range</th>
+                <th>Shards per Level</th>
+                <th>Total for Range</th>
+                <th>Running Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Unlock (0 to 1)</td>
+                <td>50</td>
+                <td>50</td>
+                <td>50</td>
+              </tr>
+              <tr>
+                <td>2 to 5</td>
+                <td>20</td>
+                <td>80</td>
+                <td>130</td>
+              </tr>
+              <tr>
+                <td>6 to 10</td>
+                <td>40</td>
+                <td>200</td>
+                <td>330</td>
+              </tr>
+              <tr>
+                <td>11 to 15</td>
+                <td>60</td>
+                <td>300</td>
+                <td>630</td>
+              </tr>
+              <tr>
+                <td>16 to 20</td>
+                <td>100</td>
+                <td>500</td>
+                <td>1.13k (1,130)</td>
+              </tr>
+              <tr>
+                <td>21 to 25</td>
+                <td>150</td>
+                <td>750</td>
+                <td>1.88k (1,880)</td>
+              </tr>
+              <tr>
+                <td>26 to 30</td>
+                <td>200</td>
+                <td>1.00k</td>
+                <td>2.88k (2,880)</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
     </main>
