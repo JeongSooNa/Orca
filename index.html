@@ -25,6 +25,9 @@
       <button class="nav-btn" data-target="calc-3">전속무기</button>
       <button class="nav-btn" data-target="calc-4">10T 연구 계산기</button>
       <button class="nav-btn" data-target="calc-5">가속 계산기</button>
+      <button class="nav-btn" data-target="calc-6">오버로드</button>
+      <button class="nav-btn" data-target="calc-7">시즌1 미리보기</button>
+      <button class="nav-btn" data-target="calc-8">시즌2 미리보기</button>
     </nav>
 
     <!-- 메인 콘텐츠 영역 (탭에 따라 변경) -->
@@ -589,6 +592,39 @@
               <tr><td>26 to 30</td><td>200</td><td>1.00k</td><td>2.88k (2,880)</td></tr>
             </tbody>
           </table>
+        </div>
+      </section>
+      <!-- 오버로드 계산기 (계산 항목 6) -->
+      <section id="calc-6" class="tab-content">
+        <h2>🦍 오버로드 훈련 및 친밀도 계산기</h2>
+        <p class="guide-text" style="margin-bottom: 20px;">목표 레벨에 따른 필요 훈련가이드(Guidebooks), 훈련확인증(Certificates), 그리고 친밀도배지(Badges) 소모량을 계산하세요.</p>
+
+        <!-- 계산기 컨트롤 영역 -->
+        <div class="calc-controls">
+          <div class="calc-field">
+            <label for="overlord-from-level">From Level</label>
+            <select id="overlord-from-level" class="calc-select"></select>
+          </div>
+          <div class="calc-field">
+            <label for="overlord-to-level">To Level</label>
+            <select id="overlord-to-level" class="calc-select"></select>
+          </div>
+        </div>
+
+        <!-- 결과 출력 박스 -->
+        <div class="calc-result-box" style="display: flex; justify-content: space-around; text-align: center; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.02); border-radius: 8px;">
+          <div>
+            <p style="font-size: 0.9rem; color: #666;">필요 훈련가이드</p>
+            <div id="result-guidebooks" class="result-number" style="font-size: 1.5rem; font-weight: bold;">0</div>
+          </div>
+          <div>
+            <p style="font-size: 0.9rem; color: #666;">필요 훈련확인증</p>
+            <div id="result-certificates" class="result-number" style="font-size: 1.5rem; font-weight: bold;">0</div>
+          </div>
+          <div>
+            <p style="font-size: 0.9rem; color: #666;">필요 친밀도배지</p>
+            <div id="result-badges" class="result-number" style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">0</div>
+          </div>
         </div>
       </section>
     </main>

@@ -272,3 +272,26 @@ body {
     font-weight: 700;
     color: #ffffff;
 }
+
+/* 오버로드 계산기 결과 박스 스타일 커스텀 */
+.overlord-result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .overlord-result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* 오버로드 계산기 결과 숫자 가인독성 개선 */
+#calc-6 .result-number {
+  color: var(--text-color, #333) !important; /* 다크모드/라이트모드에 맞게 글자색 지정 */
+  font-weight: bold;
+}
+
+#calc-6 .calc-result-box p {
+  color: var(--text-secondary, #666);
+}
