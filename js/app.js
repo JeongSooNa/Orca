@@ -274,3 +274,125 @@ document.addEventListener('DOMContentLoaded', () => {
     return num.toLocaleString();
   }
 });
+
+// 서버전 배치 툴 JS
+    document.addEventListener('DOMContentLoaded', () => {
+      const mapSize = 100;
+      const gridMap = document.getElementById('grid-map');
+      const baseNameInput = document.getElementById('base-name');
+      const clearBtn = document.getElementById('clear-bases-btn');
+      const statusEl = document.getElementById('tool-status');
+
+      let placedBases = new Map();
+
+      const capitolStart = 40; // 100 기준 중앙 20x20 시작 (40 ~ 60)
+      const capitolEnd = 60;
+
+      // 국회 4모서리(각 2x2)를 포함하여 바깥쪽으로 한 칸씩 튀어나온 3x3 캐논 위치 정의
+      // 좌상 모서리 캐논: 국회 좌상단 (40,40) 기준 바깥쪽으로 확장 -> 시작점 (39, 39)
+      // 우상 모서리 캐논: 국회 우상단 (40, 58~59) 기준 확장 -> 시작점 (39, 58)
+      // 좌하 모서리 캐논: 국회 좌하단 (58~59, 40) 기준 확장 -> 시작점 (58, 39)
+      // 우하 모서리 캐논: 국회 우하단 (58~59, 58~59) 기준 확장 -> 시작점 (58, 58)
+      const cannons = [
+        { r: capitolStart - 1, c: capitolStart - 1 }, // 좌상 (39, 39) -> 3x3
+        { r: capitolStart - 1, c: capitolEnd - 2 },   // 우상 (39, 58) -> 3x3
+        { r: capitolEnd - 2, c: capitolStart - 1 },   // 좌하 (58, 39) -> 3x3
+        { r: capitolEnd - 2, c: capitolEnd - 2 }      // 우하 (58, 58) -> 3x3
+      ];
+
+      function isCannon(r, c) {
+        return cannons.some(can => 
+          r >= can.r && r < can.r + 3 && c >= can.c && c < can.c + 3
+        );
+      }
+
+      function isCapitol(r, c) {
+        return r >= capitolStart && r < capitolEnd && c >= capitolStart && c < capitolEnd;
+      }
+
+      function initMap() {
+        if (!gridMap) return;
+        gridMap.innerHTML = '';
+        for (let r = 0; r < mapSize; r++) {
+          for (let c = 0; c < mapSize; c++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.dataset.row = r;
+            tile.dataset.col = c;
+
+            if (isCapitol(r, c)) {
+              tile.classList.add('capitol');
+              tile.title = "국회 (Capitol 20x20)";
+            }
+            if (isCannon(r, c)) {
+              tile.classList.add('cannon');
+              tile.title = "캐논 (Cannon 3x3)";
+            }
+
+            tile.addEventListener('click', () => handleTileClick(r, c));
+            gridMap.appendChild(tile);
+          }
+        }
+        renderBases();
+      }
+
+      function handleTileClick(r, c) {
+        for (let dr = 0; dr < 3; dr++) {
+          for (let dc = 0; dc < 3; dc++) {
+            let tr = r + dr;
+            let tc = c + dc;
+            if (tr >= mapSize || tc >= mapSize) {
+              statusEl.textContent = "맵 범위를 벗어납니다!";
+              return;
+            }
+            if (isCapitol(tr, tc) || isCannon(tr, tc)) {
+              statusEl.textContent = "국회 또는 캐논 영역에는 기지를 배치할 수 없습니다!";
+              return;
+            }
+          }
+        }
+
+        const baseName = baseNameInput.value.trim() || "기지";
+        const key = `${r},${c}`;
+
+        if (placedBases.has(key)) {
+          placedBases.delete(key);
+          statusEl.textContent = `기지가 삭제되었습니다.`;
+        } else {
+          placedBases.set(key, { name: baseName, r, c });
+          statusEl.textContent = `'${baseName}' 기지가 (${r}, ${c})에 배치되었습니다.`;
+        }
+        renderBases();
+      }
+
+      function renderBases() {
+        document.querySelectorAll('.tile.base').forEach(tile => {
+          tile.classList.remove('base');
+          tile.style.backgroundColor = '';
+          tile.title = '';
+        });
+
+        placedBases.forEach((base, key) => {
+          const { name, r, c } = base;
+          for (let dr = 0; dr < 3; dr++) {
+            for (let dc = 0; dc < 3; dc++) {
+              const tile = document.querySelector(`.tile[data-row="${r + dr}"][data-col="${c + dc}"]`);
+              if (tile) {
+                tile.classList.add('base');
+                tile.title = `${name} (3x3)`;
+              }
+            }
+          }
+        });
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          placedBases.clear();
+          renderBases();
+          statusEl.textContent = "모든 기지가 초기화되었습니다.";
+        });
+      }
+
+      initMap();
+    });

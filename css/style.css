@@ -23,8 +23,8 @@ body {
 
 /* 좌우로 넓게 확장 (max-width 수정) */
 .container {
-    max-width: 1050px;
-    margin: 30px auto;
+    max-width: 1400px;
+    margin: 20px auto;
     padding: 0 16px;
 }
 
@@ -136,10 +136,12 @@ body {
     font-size: 0.9rem;
     text-align: center;
     background-color: var(--card-bg);
-    white-space: nowrap; /* 모바일에서 텍스트 줄바꿈 방지 및 스크롤 유도 */
+    white-space: nowrap;
+    /* 모바일에서 텍스트 줄바꿈 방지 및 스크롤 유도 */
 }
 
-.campaign-table th, .campaign-table td {
+.campaign-table th,
+.campaign-table td {
     padding: 12px 10px;
     border: 1px solid #7bc8e2;
 }
@@ -152,7 +154,7 @@ body {
 }
 
 .campaign-table tr:nth-child(even) {
-    background-color: #eaf4fc; 
+    background-color: #eaf4fc;
 }
 
 .campaign-table tr:nth-child(odd) {
@@ -187,10 +189,12 @@ body {
     }
 
     .nav-btn {
-        flex: 1 1 calc(50% - 8px); /* 모바일에서는 버튼을 2개씩 배치 */
+        flex: 1 1 calc(50% - 8px);
+        /* 모바일에서는 버튼을 2개씩 배치 */
         min-width: auto;
     }
 }
+
 /* 전속무기 계산기 스타일 */
 .calc-controls {
     display: flex;
@@ -254,7 +258,8 @@ body {
 
 /* 결과 출력 박스 스타일 */
 .calc-result-box {
-    background-color: #1e293b; /* 어두운 남색 계열 배경 (이미지 참고) */
+    background-color: #1e293b;
+    /* 어두운 남색 계열 배경 (이미지 참고) */
     color: #ffffff;
     padding: 24px;
     border-radius: 10px;
@@ -275,23 +280,123 @@ body {
 
 /* 오버로드 계산기 결과 박스 스타일 커스텀 */
 .overlord-result-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
 }
 
 @media (max-width: 768px) {
-  .overlord-result-grid {
-    grid-template-columns: 1fr;
-  }
+    .overlord-result-grid {
+        grid-template-columns: 1fr;
+    }
 }
+
 /* 오버로드 계산기 결과 숫자 가인독성 개선 */
 #calc-6 .result-number {
-  color: var(--text-color, #333) !important; /* 다크모드/라이트모드에 맞게 글자색 지정 */
-  font-weight: bold;
+    color: var(--text-color, #333) !important;
+    /* 다크모드/라이트모드에 맞게 글자색 지정 */
+    font-weight: bold;
 }
 
 #calc-6 .calc-result-box p {
-  color: var(--text-secondary, #666);
+    color: var(--text-secondary, #666);
 }
+
+/* 메인 화면 컨테이너 넓이를 넓혀서 전체적으로 시원하게 확장 */
+    .container {
+      max-width: 1400px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+
+    .app-main {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 32px;
+      min-height: 700px; /* 전체 높이 확장 */
+      box-shadow: 0 4px 12px rgba(0, 119, 190, 0.08);
+      border: 1px solid var(--border-color);
+    }
+
+    /* 서버전 배치 툴 확장 스타일 */
+    .tool-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .tool-controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      background: #f7fcff;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+
+    .tool-controls input, .tool-controls button {
+      padding: 8px 12px;
+      font-size: 0.95rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tool-controls button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .tool-controls button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 맵 뷰어 크기 대폭 확장 */
+    .map-container-large {
+      width: 100%;
+      height: 750px; 
+      background-color: #2b3e50;
+      border-radius: 8px;
+      overflow: auto;
+      position: relative;
+      border: 2px solid var(--primary-color);
+    }
+
+    .grid-map {
+      display: grid;
+      grid-template-columns: repeat(100, 24px);
+      grid-template-rows: repeat(100, 20px);
+      position: relative;
+    }
+
+    .tile {
+      width: 24px;
+      height: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background-color: #34495e;
+      cursor: pointer;
+    }
+
+    .tile:hover {
+      background-color: #5d6d7e;
+    }
+
+    .tile.capitol {
+      background-color: #e74c3c !important;
+      border: 1px solid #c0392b;
+    }
+
+    .tile.cannon {
+      background-color: #f1c40f !important;
+      border: 1px solid #d4ac0d;
+    }
+
+    .tile.base {
+      background-color: #3498db !important;
+      border: 1px solid #2980b9;
+    }
