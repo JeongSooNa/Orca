@@ -380,7 +380,7 @@ body {
 }
 
 .palette-base-block {
-    width: 100%;
+    width: 50%;
     height: 35px;
     border-radius: 4px;
     cursor: grab;
@@ -398,7 +398,7 @@ body {
 }
 
 .palette-base-block[data-color="red"] {
-    background-color: #e67e22;
+    background-color: red;
 }
 
 .palette-base-block[data-color="yellow"] {
@@ -490,7 +490,7 @@ body {
 }
 
 .tile.base-red {
-    background-color: #e67e22 !important;
+    background-color: red !important;
 }
 
 .tile.base-yellow {
