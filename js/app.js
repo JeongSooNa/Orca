@@ -275,124 +275,321 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// 서버전 배치 툴 JS
-    document.addEventListener('DOMContentLoaded', () => {
-      const mapSize = 100;
-      const gridMap = document.getElementById('grid-map');
-      const baseNameInput = document.getElementById('base-name');
-      const clearBtn = document.getElementById('clear-bases-btn');
-      const statusEl = document.getElementById('tool-status');
+// 서버전 배치 툴 JS 전체 코드 (국회 및 캐논 텍스트 추가 버전)
+document.addEventListener('DOMContentLoaded', () => {
+  const mapSize = 100;
+  const tileWidth = 20;
+  const tileHeight = 17;
+  
+  const gridMap = document.getElementById('grid-map');
+  const mapContainer = document.querySelector('.map-container-large');
+  const clearBtn = document.getElementById('clear-bases-btn');
+  const statusEl = document.getElementById('tool-status');
 
-      let placedBases = new Map();
+  let placedBases = new Map(); 
+  let placedMemos = new Map(); 
+  let memoIdCounter = 0;
+  let draggedData = null;
 
-      const capitolStart = 40; // 100 기준 중앙 20x20 시작 (40 ~ 60)
-      const capitolEnd = 60;
+  const capitolStart = 40; 
+  const capitolEnd = 60;
 
-      // 국회 4모서리(각 2x2)를 포함하여 바깥쪽으로 한 칸씩 튀어나온 3x3 캐논 위치 정의
-      // 좌상 모서리 캐논: 국회 좌상단 (40,40) 기준 바깥쪽으로 확장 -> 시작점 (39, 39)
-      // 우상 모서리 캐논: 국회 우상단 (40, 58~59) 기준 확장 -> 시작점 (39, 58)
-      // 좌하 모서리 캐논: 국회 좌하단 (58~59, 40) 기준 확장 -> 시작점 (58, 39)
-      // 우하 모서리 캐논: 국회 우하단 (58~59, 58~59) 기준 확장 -> 시작점 (58, 58)
-      const cannons = [
-        { r: capitolStart - 1, c: capitolStart - 1 }, // 좌상 (39, 39) -> 3x3
-        { r: capitolStart - 1, c: capitolEnd - 2 },   // 우상 (39, 58) -> 3x3
-        { r: capitolEnd - 2, c: capitolStart - 1 },   // 좌하 (58, 39) -> 3x3
-        { r: capitolEnd - 2, c: capitolEnd - 2 }      // 우하 (58, 58) -> 3x3
-      ];
+  // 4개 캐논의 시작 좌표 설정 (북, 동, 서, 남 방향별 배치)
+  const cannons = [
+    { name: "북", r: capitolStart - 1, c: capitolStart - 1 }, 
+    { name: "동", r: capitolStart - 1, c: capitolEnd - 2 },   
+    { name: "서", r: capitolEnd - 2, c: capitolStart - 1 },   
+    { name: "남", r: capitolEnd - 2, c: capitolEnd - 2 }      
+  ];
 
-      function isCannon(r, c) {
-        return cannons.some(can => 
-          r >= can.r && r < can.r + 3 && c >= can.c && c < can.c + 3
-        );
+  function isCannon(r, c) {
+    return cannons.some(can => r >= can.r && r < can.r + 3 && c >= can.c && c < can.c + 3);
+  }
+
+  function isCapitol(r, c) {
+    return r >= capitolStart && r < capitolEnd && c >= capitolStart && c < capitolEnd;
+  }
+
+  function initMap() {
+    if (!gridMap) return;
+    gridMap.innerHTML = '';
+    
+    // 1단계: 전체 기본 타일 생성
+    for (let r = 0; r < mapSize; r++) {
+      for (let c = 0; c < mapSize; c++) {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.dataset.row = r;
+        tile.dataset.col = c;
+
+        tile.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          showDragPreview(r, c);
+        });
+
+        tile.addEventListener('drop', (e) => handleDrop(e, r, c));
+
+        gridMap.appendChild(tile);
       }
+    }
 
-      function isCapitol(r, c) {
-        return r >= capitolStart && r < capitolEnd && c >= capitolStart && c < capitolEnd;
+    // 2단계: 국회(Capitol) 영역 색칠 및 중앙에 텍스트 표시
+    for (let r = capitolStart; r < capitolEnd; r++) {
+      for (let c = capitolStart; c < capitolEnd; c++) {
+        const tile = document.querySelector(`.tile[data-row="${r}"][data-col="${c}"]`);
+        if (tile) {
+          tile.classList.add('capitol');
+          tile.title = "국회 (Capitol)";
+        }
       }
+    }
+    // 국회 정중앙 타일에 텍스트 삽입 (49행, 49열 부근)
+    const capitolCenterTile = document.querySelector(`.tile[data-row="${capitolStart + 9}"][data-col="${capitolStart + 9}"]`);
+    if (capitolCenterTile) {
+      const textSpan = document.createElement('span');
+      textSpan.className = 'map-label-text';
+      textSpan.textContent = '국회';
+      capitolCenterTile.appendChild(textSpan);
+    }
 
-      function initMap() {
-        if (!gridMap) return;
-        gridMap.innerHTML = '';
-        for (let r = 0; r < mapSize; r++) {
-          for (let c = 0; c < mapSize; c++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            tile.dataset.row = r;
-            tile.dataset.col = c;
-
-            if (isCapitol(r, c)) {
-              tile.classList.add('capitol');
-              tile.title = "국회 (Capitol 20x20)";
-            }
-            if (isCannon(r, c)) {
-              tile.classList.add('cannon');
-              tile.title = "캐논 (Cannon 3x3)";
-            }
-
-            tile.addEventListener('click', () => handleTileClick(r, c));
-            gridMap.appendChild(tile);
+    // 3단계: 캐논(Cannon) 영역 색칠 및 각 캐논 중앙에 방향 텍스트 표시
+    cannons.forEach(can => {
+      for (let dr = 0; dr < 3; dr++) {
+        for (let dc = 0; dc < 3; dc++) {
+          let tr = can.r + dr;
+          let tc = can.c + dc;
+          const tile = document.querySelector(`.tile[data-row="${tr}"][data-col="${tc}"]`);
+          if (tile) {
+            tile.classList.remove('capitol');
+            tile.classList.add('cannon');
+            tile.title = `캐논 (${can.name})`;
           }
         }
-        renderBases();
       }
+      // 각 캐논의 정중앙 타일에 방향 텍스트 삽입 (시작점 + 1, + 1)
+      const cannonCenterTile = document.querySelector(`.tile[data-row="${can.r + 1}"][data-col="${can.c + 1}"]`);
+      if (cannonCenterTile) {
+        // 기존에 국회 텍스트 등이 겹치지 않도록 초기화 후 삽입
+        const textSpan = document.createElement('span');
+        textSpan.className = 'map-label-text cannon-text';
+        textSpan.textContent = can.name;
+        cannonCenterTile.appendChild(textSpan);
+      }
+    });
 
-      function handleTileClick(r, c) {
+    // 드래그 아이템 이벤트 바인딩
+    document.querySelectorAll('.draggable-item').forEach(item => {
+      item.addEventListener('dragstart', (e) => {
+        draggedData = {
+          type: item.dataset.type,
+          color: item.dataset.color || ''
+        };
+        e.dataTransfer.setData('text/plain', JSON.stringify(draggedData));
+      });
+
+      item.addEventListener('dragend', () => {
+        draggedData = null;
+        clearDragPreview();
+      });
+    });
+
+    renderMap();
+    scrollToCapitolCenter();
+  }
+
+  function scrollToCapitolCenter() {
+    if (!mapContainer) return;
+    const capitolCenterX = (capitolStart + capitolEnd) / 2 * tileWidth;
+    const capitolCenterY = (capitolStart + capitolEnd) / 2 * tileHeight;
+
+    const targetX = capitolCenterX - mapContainer.clientWidth / 2;
+    const targetY = capitolCenterY - mapContainer.clientHeight / 2;
+    mapContainer.scrollLeft = Math.max(0, targetX);
+    mapContainer.scrollTop = Math.max(0, targetY);
+  }
+
+  function showDragPreview(r, c) {
+    clearDragPreview();
+    if (!draggedData) return;
+
+    if (draggedData.type === 'base') {
+      for (let dr = 0; dr < 3; dr++) {
+        for (let dc = 0; dc < 3; dc++) {
+          let tr = r + dr;
+          let tc = c + dc;
+          if (tr < mapSize && tc < mapSize) {
+            const tile = document.querySelector(`.tile[data-row="${tr}"][data-col="${tc}"]`);
+            if (tile) tile.classList.add('drag-preview');
+          }
+        }
+      }
+    } else if (draggedData.type === 'memo') {
+      const tile = document.querySelector(`.tile[data-row="${r}"][data-col="${c}"]`);
+      if (tile) tile.classList.add('drag-preview');
+    }
+  }
+
+  function clearDragPreview() {
+    document.querySelectorAll('.tile.drag-preview').forEach(tile => {
+      tile.classList.remove('drag-preview');
+    });
+  }
+
+  function handleDrop(e, r, c) {
+    e.preventDefault();
+    clearDragPreview();
+
+    try {
+      const data = draggedData || JSON.parse(e.dataTransfer.getData('text/plain'));
+
+      if (data.type === 'base') {
         for (let dr = 0; dr < 3; dr++) {
           for (let dc = 0; dc < 3; dc++) {
             let tr = r + dr;
             let tc = c + dc;
             if (tr >= mapSize || tc >= mapSize) {
-              statusEl.textContent = "맵 범위를 벗어납니다!";
+              if (statusEl) statusEl.textContent = "맵 범위를 벗어납니다!";
               return;
             }
             if (isCapitol(tr, tc) || isCannon(tr, tc)) {
-              statusEl.textContent = "국회 또는 캐논 영역에는 기지를 배치할 수 없습니다!";
+              if (statusEl) statusEl.textContent = "국회 또는 캐논 영역에는 기지를 배치할 수 없습니다!";
               return;
             }
           }
         }
 
-        const baseName = baseNameInput.value.trim() || "기지";
-        const key = `${r},${c}`;
-
-        if (placedBases.has(key)) {
-          placedBases.delete(key);
-          statusEl.textContent = `기지가 삭제되었습니다.`;
-        } else {
-          placedBases.set(key, { name: baseName, r, c });
-          statusEl.textContent = `'${baseName}' 기지가 (${r}, ${c})에 배치되었습니다.`;
-        }
-        renderBases();
-      }
-
-      function renderBases() {
-        document.querySelectorAll('.tile.base').forEach(tile => {
-          tile.classList.remove('base');
-          tile.style.backgroundColor = '';
-          tile.title = '';
-        });
-
-        placedBases.forEach((base, key) => {
-          const { name, r, c } = base;
-          for (let dr = 0; dr < 3; dr++) {
-            for (let dc = 0; dc < 3; dc++) {
-              const tile = document.querySelector(`.tile[data-row="${r + dr}"][data-col="${c + dc}"]`);
-              if (tile) {
-                tile.classList.add('base');
-                tile.title = `${name} (3x3)`;
-              }
+        for (let dr = 0; dr < 3; dr++) {
+          for (let dc = 0; dc < 3; dc++) {
+            if (checkBaseOverlap(r + dr, c + dc)) {
+              if (statusEl) statusEl.textContent = "다른 기지와 겹칠 수 없습니다!";
+              return;
             }
           }
-        });
-      }
+        }
 
-      if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
-          placedBases.clear();
-          renderBases();
-          statusEl.textContent = "모든 기지가 초기화되었습니다.";
-        });
-      }
+        const key = `${r},${c}`;
+        placedBases.set(key, { color: data.color, r, c });
+        if (statusEl) statusEl.textContent = `${data.color}색 기지가 (${r}, ${c})에 배치되었습니다.`;
+        renderMap();
 
-      initMap();
+      } else if (data.type === 'memo') {
+        const memoText = prompt("메모 내용을 입력하세요:", "중요 거점");
+        if (!memoText) return;
+
+        const memoKey = `memo_${memoIdCounter++}`;
+        placedMemos.set(memoKey, { text: memoText, r, c });
+        if (statusEl) statusEl.textContent = `메모가 (${r}, ${c})에 추가되었습니다.`;
+        renderMap();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function checkBaseOverlap(targetR, targetC) {
+    for (let [key, base] of placedBases) {
+      if (targetR >= base.r && targetR < base.r + 3 && targetC >= base.c && targetC < base.c + 3) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function renderMap() {
+    document.querySelectorAll('.tile').forEach(tile => {
+      const r = parseInt(tile.dataset.row);
+      const c = parseInt(tile.dataset.col);
+      
+      tile.className = 'tile';
+      if (isCapitol(r, c)) {
+        tile.classList.add('capitol');
+        tile.title = "국회 (Capitol)";
+      }
+      if (isCannon(r, c)) {
+        tile.classList.remove('capitol');
+        tile.classList.add('cannon');
+        const foundCannon = cannons.find(can => r >= can.r && r < can.r + 3 && c >= can.c && c < can.c + 3);
+        tile.title = foundCannon ? `캐논 (${foundCannon.name})` : "캐논";
+      } else if (!isCapitol(r, c)) {
+        tile.title = '';
+      }
+      
+      tile.onclick = null;
     });
+
+    // 국회 및 캐논 중앙 텍스트 재삽입
+    const capitolCenterTile = document.querySelector(`.tile[data-row="${capitolStart + 9}"][data-col="${capitolStart + 9}"]`);
+    if (capitolCenterTile) {
+      const textSpan = document.createElement('span');
+      textSpan.className = 'map-label-text';
+      textSpan.textContent = '국회';
+      capitolCenterTile.appendChild(textSpan);
+    }
+
+    cannons.forEach(can => {
+      const cannonCenterTile = document.querySelector(`.tile[data-row="${can.r + 1}"][data-col="${can.c + 1}"]`);
+      if (cannonCenterTile) {
+        const textSpan = document.createElement('span');
+        textSpan.className = 'map-label-text cannon-text';
+        textSpan.textContent = can.name;
+        cannonCenterTile.appendChild(textSpan);
+      }
+    });
+
+    document.querySelectorAll('.map-memo').forEach(el => el.remove());
+
+    // 기지 렌더링
+    placedBases.forEach((base, key) => {
+      const { color, r, c } = base;
+      const colorClass = `base-${color}`;
+
+      for (let dr = 0; dr < 3; dr++) {
+        for (let dc = 0; dc < 3; dc++) {
+          const tile = document.querySelector(`.tile[data-row="${r + dr}"][data-col="${c + dc}"]`);
+          if (tile && !tile.classList.contains('capitol') && !tile.classList.contains('cannon')) {
+            tile.classList.add('has-base', colorClass);
+
+            tile.onclick = () => {
+              placedBases.delete(key);
+              renderMap();
+              if (statusEl) statusEl.textContent = "기지가 삭제되었습니다.";
+            };
+          }
+        }
+      }
+    });
+
+    // 메모 렌더링
+    placedMemos.forEach((memo, memoKey) => {
+      const tile = document.querySelector(`.tile[data-row="${memo.r}"][data-col="${memo.c}"]`);
+      if (tile) {
+        const memoEl = document.createElement('div');
+        memoEl.className = 'map-memo';
+        memoEl.textContent = memo.text;
+        
+        memoEl.style.left = `${memo.c * tileWidth}px`;
+        memoEl.style.top = `${memo.r * tileHeight}px`;
+
+        memoEl.onclick = (e) => {
+          e.stopPropagation();
+          placedMemos.delete(memoKey);
+          renderMap();
+          if (statusEl) statusEl.textContent = "메모가 삭제되었습니다.";
+        };
+
+        gridMap.appendChild(memoEl);
+      }
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      placedBases.clear();
+      placedMemos.clear();
+      renderMap();
+      if (statusEl) statusEl.textContent = "모든 기지와 메모가 초기화되었습니다.";
+    });
+  }
+
+  initMap();
+});

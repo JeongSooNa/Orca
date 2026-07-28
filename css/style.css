@@ -304,99 +304,255 @@ body {
 }
 
 /* 메인 화면 컨테이너 넓이를 넓혀서 전체적으로 시원하게 확장 */
-    .container {
-      max-width: 1400px;
-      margin: 20px auto;
-      padding: 0 16px;
-    }
+.container {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 0 16px;
+}
 
-    .app-main {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 32px;
-      min-height: 700px; /* 전체 높이 확장 */
-      box-shadow: 0 4px 12px rgba(0, 119, 190, 0.08);
-      border: 1px solid var(--border-color);
-    }
+.app-main {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 32px;
+    min-height: 700px;
+    /* 전체 높이 확장 */
+    box-shadow: 0 4px 12px rgba(0, 119, 190, 0.08);
+    border: 1px solid var(--border-color);
+}
 
-    /* 서버전 배치 툴 확장 스타일 */
-    .tool-layout {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+/* 서버전 배치 툴 레이아웃 */
+.tool-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
 
-    .tool-controls {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      background: #f7fcff;
-      padding: 15px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      flex-wrap: wrap;
-    }
+.tool-status-bar {
+    background: #f7fcff;
+    border: 1px solid var(--border-color);
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
 
-    .tool-controls input, .tool-controls button {
-      padding: 8px 12px;
-      font-size: 0.95rem;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-    }
+.tool-container {
+    display: flex;
+    gap: 15px;
+}
 
-    .tool-controls button {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
+.palette-sidebar {
+    width: 220px;
+    background: #f7fcff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
 
-    .tool-controls button:hover {
-      background-color: var(--primary-hover);
-    }
+.palette-sidebar h3 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-bottom: -4px;
+}
 
-    /* 맵 뷰어 크기 대폭 확장 */
-    .map-container-large {
-      width: 100%;
-      height: 750px; 
-      background-color: #2b3e50;
-      border-radius: 8px;
-      overflow: auto;
-      position: relative;
-      border: 2px solid var(--primary-color);
-    }
+.palette-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-    .grid-map {
-      display: grid;
-      grid-template-columns: repeat(100, 24px);
-      grid-template-rows: repeat(100, 20px);
-      position: relative;
-    }
+.palette-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #7f8c8d;
+    margin-bottom: 2px;
+}
 
-    .tile {
-      width: 24px;
-      height: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background-color: #34495e;
-      cursor: pointer;
-    }
+.palette-blocks {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
 
-    .tile:hover {
-      background-color: #5d6d7e;
-    }
+.palette-base-block {
+    width: 100%;
+    height: 35px;
+    border-radius: 4px;
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.1s;
+}
 
-    .tile.capitol {
-      background-color: #e74c3c !important;
-      border: 1px solid #c0392b;
-    }
+.palette-base-block:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
 
-    .tile.cannon {
-      background-color: #f1c40f !important;
-      border: 1px solid #d4ac0d;
-    }
+.palette-base-block[data-color="blue"] {
+    background-color: #3498db;
+}
 
-    .tile.base {
-      background-color: #3498db !important;
-      border: 1px solid #2980b9;
+.palette-base-block[data-color="red"] {
+    background-color: #e67e22;
+}
+
+.palette-base-block[data-color="yellow"] {
+    background-color: #f1c40f;
+}
+
+.palette-base-block[data-color="white"] {
+    background-color: #ecf0f1;
+    border: 1px solid #bdc3c7;
+}
+
+.memo-item {
+    background-color: #9b59b6;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: grab;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    user-select: none;
+}
+
+.memo-item:active {
+    cursor: grabbing;
+    transform: scale(0.97);
+}
+
+.clear-btn {
+    margin-top: auto;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.clear-btn:hover {
+    background-color: #c0392b;
+}
+
+.map-container-large {
+    flex: 1;
+    height: 700px;
+    background-color: #1a252f;
+    border-radius: 8px;
+    overflow: auto;
+    position: relative;
+    border: 2px solid var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.grid-map {
+    display: grid;
+    grid-template-columns: repeat(100, 20px);
+    grid-template-rows: repeat(100, 17px);
+    position: relative;
+    background-color: #2b3e50;
+    border: 2px solid #415b76;
+}
+
+.tile {
+    width: 20px;
+    height: 17px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    background-color: #34495e;
+    position: relative;
+}
+
+.tile.capitol {
+    background-color: #7f8c8d !important;
+}
+
+/* 캐논을 국회보다 나중에 렌더링하여 위로 오도록 설정 */
+.tile.cannon {
+    background-color: #07111b !important;
+    z-index: 2;
+    position: relative;
+}
+
+.tile.base-blue {
+    background-color: #3498db !important;
+}
+
+.tile.base-red {
+    background-color: #e67e22 !important;
+}
+
+.tile.base-yellow {
+    background-color: #f1c40f !important;
+}
+
+.tile.base-white {
+    background-color: #ecf0f1 !important;
+}
+
+.tile.drag-preview {
+    opacity: 0.55 !important;
+    box-shadow: inset 0 0 0 1px #fff;
+}
+
+.tile.has-base:hover::after {
+    content: '✕';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    background: red;
+    color: white;
+    font-size: 9px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.map-memo {
+    position: absolute;
+    background: rgba(155, 89, 182, 0.95);
+    color: white;
+    padding: 2px 5px;
+    font-size: 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    z-index: 5;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.map-memo:hover::after {
+    content: ' ✕';
+    color: #ffcccc;
+}
+.map-label-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 11px;
+      font-weight: bold;
+      color: #ffffff;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 5;
+    }
+    .cannon-text {
+      color: #ffffff; /* 노란색 캐논 위에서는 진한 색상 */
     }
