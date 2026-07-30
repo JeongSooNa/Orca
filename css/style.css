@@ -21,7 +21,7 @@ body {
     line-height: 1.6;
 }
 
-/* 좌우로 넓게 확장 (max-width 수정) */
+/* 좌우로 넓게 확장 */
 .container {
     max-width: 1400px;
     margin: 20px auto;
@@ -45,7 +45,7 @@ body {
     font-size: 1rem;
 }
 
-/* 상단 내비게이션 바 스타일 (모바일 반응형 고려) */
+/* 상단 내비게이션 바 스타일 */
 .app-nav {
     display: flex;
     flex-wrap: wrap;
@@ -84,8 +84,8 @@ body {
 .app-main {
     background-color: var(--card-bg);
     border-radius: 12px;
-    padding: 28px;
-    min-height: 400px;
+    padding: 32px;
+    min-height: 700px;
     box-shadow: 0 4px 12px rgba(0, 119, 190, 0.08);
     border: 1px solid var(--border-color);
 }
@@ -137,7 +137,6 @@ body {
     text-align: center;
     background-color: var(--card-bg);
     white-space: nowrap;
-    /* 모바일에서 텍스트 줄바꿈 방지 및 스크롤 유도 */
 }
 
 .campaign-table th,
@@ -190,7 +189,6 @@ body {
 
     .nav-btn {
         flex: 1 1 calc(50% - 8px);
-        /* 모바일에서는 버튼을 2개씩 배치 */
         min-width: auto;
     }
 }
@@ -259,7 +257,6 @@ body {
 /* 결과 출력 박스 스타일 */
 .calc-result-box {
     background-color: #1e293b;
-    /* 어두운 남색 계열 배경 (이미지 참고) */
     color: #ffffff;
     padding: 24px;
     border-radius: 10px;
@@ -292,10 +289,8 @@ body {
     }
 }
 
-/* 오버로드 계산기 결과 숫자 가인독성 개선 */
 #calc-6 .result-number {
     color: var(--text-color, #333) !important;
-    /* 다크모드/라이트모드에 맞게 글자색 지정 */
     font-weight: bold;
 }
 
@@ -303,100 +298,211 @@ body {
     color: var(--text-secondary, #666);
 }
 
-/* 메인 화면 컨테이너 넓이를 넓혀서 전체적으로 시원하게 확장 */
-    .container {
-      max-width: 1400px;
-      margin: 20px auto;
-      padding: 0 16px;
-    }
+/* 서버전 배치 툴 확장 스타일 */
+.tool-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
-    .app-main {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 32px;
-      min-height: 700px; /* 전체 높이 확장 */
-      box-shadow: 0 4px 12px rgba(0, 119, 190, 0.08);
-      border: 1px solid var(--border-color);
-    }
+.tool-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: #f7fcff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
 
-    /* 서버전 배치 툴 확장 스타일 */
-    .tool-layout {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-light);
+}
 
-    .tool-controls {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      background: #f7fcff;
-      padding: 15px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      flex-wrap: wrap;
-    }
+.tool-controls input[type="number"] {
+    width: 70px;
+    padding: 6px;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
 
-    .tool-controls input, .tool-controls button {
-      padding: 8px 12px;
-      font-size: 0.95rem;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-    }
+.tool-controls button, .palette-controls button {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
 
-    .tool-controls button {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
+.tool-controls button:hover, .palette-controls button:hover {
+    background-color: var(--primary-hover);
+}
 
-    .tool-controls button:hover {
-      background-color: var(--primary-hover);
-    }
+/* 팔레트 패널 스타일 */
+.toolbox-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
 
-    /* 맵 뷰어 크기 대폭 확장 */
-    .map-container-large {
-      width: 100%;
-      height: 750px; 
-      background-color: #2b3e50;
-      border-radius: 8px;
-      overflow: auto;
-      position: relative;
-      border: 2px solid var(--primary-color);
+@media (max-width: 768px) {
+    .toolbox-panel {
+        grid-template-columns: 1fr;
     }
+}
 
-    .grid-map {
-      display: grid;
-      grid-template-columns: repeat(100, 24px);
-      grid-template-rows: repeat(100, 20px);
-      position: relative;
-    }
+.palette-section {
+    background: #f7fcff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
 
-    .tile {
-      width: 24px;
-      height: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background-color: #34495e;
-      cursor: pointer;
-    }
+.palette-section h3 {
+    font-size: 0.95rem;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
 
-    .tile:hover {
-      background-color: #5d6d7e;
-    }
+.palette-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
 
-    .tile.capitol {
-      background-color: #e74c3c !important;
-      border: 1px solid #c0392b;
-    }
+.palette-controls input, .palette-controls select {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    flex: 1;
+}
 
-    .tile.cannon {
-      background-color: #f1c40f !important;
-      border: 1px solid #d4ac0d;
-    }
+.item-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-height: 80px;
+    overflow-y: auto;
+}
 
-    .tile.base {
-      background-color: #3498db !important;
-      border: 1px solid #2980b9;
-    }
+.draggable-item {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: grab;
+    user-select: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.draggable-item:active {
+    cursor: grabbing;
+}
+
+/* 맵 뷰어 크기 */
+.map-container-large {
+    width: 100%;
+    height: 650px; 
+    background-color: #2b3e50;
+    border-radius: 8px;
+    overflow: auto;
+    position: relative;
+    border: 2px solid var(--primary-color);
+}
+
+.grid-map {
+    display: grid;
+    position: relative;
+}
+
+.tile {
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: #34495e;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.tile.mud {
+    background-color: #7f8c8d !important;
+}
+
+.tile.capitol {
+    background-color: #e74c3c !important;
+    border: 1px solid #c0392b;
+}
+
+.tile.cannon {
+    background-color: #f1c40f !important;
+    border: 1px solid #d4ac0d;
+}
+
+/* 배치된 오브젝트 (기지/메모) 스타일 및 호버 삭제 버튼 */
+.placed-object {
+    position: absolute;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    overflow: hidden;
+    z-index: 10;
+}
+.placed-object.memo-object {
+    height: 20px !important; /* 세로 1칸 고정 */
+    width: auto !important;
+    min-width: 40px;
+    padding: 0 6px;
+    background-color: #f39c12 !important;
+    color: #ffffff;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.placed-object .delete-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(231, 76, 60, 0.85);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-size: 11px;
+}
+
+.placed-object:hover .delete-overlay {
+    opacity: 0.8;
+}
+/* 드래그 미리보기 하이라이트 스타일 */
+.tile.drag-over-valid {
+    background-color: rgba(46, 204, 113, 0.6) !important;
+    border: 1px dashed #27ae60 !important;
+}
+
+.tile.drag-over-invalid {
+    background-color: rgba(231, 76, 60, 0.6) !important;
+    border: 1px dashed #c0392b !important;
+}

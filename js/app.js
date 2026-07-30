@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
 document.addEventListener('DOMContentLoaded', () => {
     // 기존 탭 관련 JS 코드 밑에 추가
 
@@ -47,13 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 레벨별 누적 조각 데이터 (Running Total 기준)
-    // 0(해제): 50, 1: 50, 2~5(구간총합 80 -> 누적 130), 6~10(누적 330), 11~15(누적 630), 16~20(누적 1130), 21~25(누적 1880), 26~30(누적 2880)
-    // 세부 레벨별 정확한 소모량 정의 함수
     function getShardsForLevel(lvl) {
         if (lvl <= 0) return 0;
         if (lvl === 1) return 50;
-        if (lvl >= 2 && lvl <= 5) return 50 + (lvl - 1) * 20; // 대략적 균등 분배 혹은 구간 계산
-        // 정확한 누적 기준 계산 로직 구현
+        if (lvl >= 2 && lvl <= 5) return 50 + (lvl - 1) * 20;
         let cumulative = [
             0,   // L0
             50,  // L1
@@ -103,8 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let total = 0;
-        
-        // 0레벨에서 시작할 때 해제 비용(50개) 포함 여부 처리
         let includeUnlock = includeUnlockCheckbox ? includeUnlockCheckbox.checked : false;
 
         let costFrom = getShardsForLevel(fromLvl);
@@ -112,13 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         total = costTo - costFrom;
 
-        // 만약 from이 0이고 includeUnlock이 체크되어 있거나 기본 해제 포함 계산일 때
-        if (fromLvl === 0 && !includeUnlock && toLvl > 0) {
-            // 0레벨 해제 비용(50개)을 제외하고 싶을 때의 처리 등 맞춤 조절 가능
-            // 보통 0부터 시작하면 해제 비용 포함이므로 costTo와 같음
-        }
-
-        // 보기 좋은 포맷 (예: 2.88k 또는 숫자)
         let displayStr = total.toString();
         if (total >= 1000) {
             displayStr = (total / 1000).toFixed(2) + 'k (' + total.toLocaleString() + '개)';
@@ -175,9 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let totalCertificates = 0;
     let totalBadges = 0;
 
-    // 1. 훈련 레벨 구간별 가이드북 및 인증서(Certificates) 계산
     for (let i = from; i < to; i++) {
-      // 가이드북 계산 (레벨 구간별 규칙)
       if (i >= 1 && i <= 20) totalGuidebooks += 600;
       else if (i >= 21 && i <= 40) totalGuidebooks += 800;
       else if (i >= 41 && i <= 50) totalGuidebooks += 1000;
@@ -215,9 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (i >= 581 && i <= 590) totalGuidebooks += 11200;
       else if (i >= 591 && i <= 595) totalGuidebooks += 11600;
       else if (i >= 596 && i <= 600) totalGuidebooks += 12000;
-      else totalGuidebooks += 12000; // 600 이상 고레벨 구간
+      else totalGuidebooks += 12000;
 
-      // 인증서(Certificates) 규칙 (제공해주신 데이터 기준 5레벨 단위)
       if (i % 5 === 0) {
         if (i <= 40) totalCertificates += 10;
         else if (i <= 90) totalCertificates += 20;
@@ -229,39 +215,34 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (i <= 390) totalCertificates += 80;
         else if (i <= 440) totalCertificates += 90;
         else if (i <= 490) totalCertificates += 100;
-        else if (i <= 540) totalCertificates += 270; // 데이터 상 중간 단위 반영
+        else if (i <= 540) totalCertificates += 270;
         else if (i <= 590) totalCertificates += 290;
         else totalCertificates += 300;
       }
     }
 
-    // 2. 본드 배지(Badges) 계산 (해당 레벨 구간에 포함되는 본드 등급 배지 누적)
-    // 제공된 데이터의 해제 훈련 레벨(Unlocks Training Level) 기준 매핑
     const bondRatingsData = [
-      { level: 0, badges: 2 },   // No Rating ~ New Partner X (Level 0 ~ 50)
-      { level: 50, badges: 4 },  // New Partner X ~ Rookie Partner I (Level 50 ~ 100)
-      { level: 100, badges: 6 }, // Rookie Partner I ~ Trusted Friend I (Level 100 ~ 150)
-      { level: 150, badges: 10 },// Trusted Friend I ~ Reliable Partner I (Level 150 ~ 200)
-      { level: 200, badges: 10 },// Reliable Partner II ~ X 구간 세부 반영
-      { level: 250, badges: 15 },// Loyal Friend I
-      { level: 300, badges: 20 },// Bonded Partner I
-      { level: 350, badges: 25 },// Perfect Sync I
-      { level: 400, badges: 30 },// Strategic Pillar I
-      { level: 450, badges: 40 },// Heart Bond I
-      { level: 500, badges: 50 },// Team Anchor I
-      { level: 550, badges: 60 },// Elite Ace I
-      { level: 600, badges: 70 } // Ultimate Overlord I ~ X
+      { level: 0, badges: 2 },
+      { level: 50, badges: 4 },
+      { level: 100, badges: 6 },
+      { level: 150, badges: 10 },
+      { level: 200, badges: 10 },
+      { level: 250, badges: 15 },
+      { level: 300, badges: 20 },
+      { level: 350, badges: 25 },
+      { level: 400, badges: 30 },
+      { level: 450, badges: 40 },
+      { level: 500, badges: 50 },
+      { level: 550, badges: 60 },
+      { level: 600, badges: 70 }
     ];
 
-    // 선택한 From ~ To 범위 사이에 걸치는 본드 승급 배지 합산
     bondRatingsData.forEach(item => {
       if (item.level >= from && item.level < to) {
-        // 각 등급 내의 세부 단계(I~X, 총 10단계 혹은 세부 뱃지 총합) 반영
         totalBadges += (item.badges * 10); 
       }
     });
 
-    // 결과 출력 텍스트 변환 (1000 이상은 k 단위 표기 혹은 일반 숫자)
     guidebooksEl.textContent = formatNumber(totalGuidebooks);
     certificatesEl.textContent = formatNumber(totalCertificates);
     badgesEl.textContent = totalBadges.toLocaleString();
@@ -275,124 +256,297 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// 서버전 배치 툴 JS
-    document.addEventListener('DOMContentLoaded', () => {
-      const mapSize = 100;
-      const gridMap = document.getElementById('grid-map');
-      const baseNameInput = document.getElementById('base-name');
-      const clearBtn = document.getElementById('clear-bases-btn');
-      const statusEl = document.getElementById('tool-status');
+// 서버전 배치 툴 JS (기지 3x3 및 메모 세로 1칸 분리 적용 버전)
+document.addEventListener('DOMContentLoaded', () => {
+    const gridMap = document.getElementById('grid-map');
+    const mapSizeInput = document.getElementById('map-size-input');
+    const mudSizeInput = document.getElementById('mud-size-input');
+    const capitolSizeInput = document.getElementById('capitol-size-input');
+    const showCapitolCheckbox = document.getElementById('show-capitol-checkbox');
+    const applyMapConfigBtn = document.getElementById('apply-map-config');
+    const clearAllBtn = document.getElementById('clear-all-btn');
 
-      let placedBases = new Map();
+    const newBaseNameInput = document.getElementById('new-base-name');
+    const newBaseColorSelect = document.getElementById('new-base-color');
+    const addBaseBtn = document.getElementById('add-base-item');
+    const basePaletteList = document.getElementById('base-palette-list');
 
-      const capitolStart = 40; // 100 기준 중앙 20x20 시작 (40 ~ 60)
-      const capitolEnd = 60;
+    const newMemoTextInput = document.getElementById('new-memo-text');
+    const addMemoBtn = document.getElementById('add-memo-item');
+    const memoPaletteList = document.getElementById('memo-palette-list');
 
-      // 국회 4모서리(각 2x2)를 포함하여 바깥쪽으로 한 칸씩 튀어나온 3x3 캐논 위치 정의
-      // 좌상 모서리 캐논: 국회 좌상단 (40,40) 기준 바깥쪽으로 확장 -> 시작점 (39, 39)
-      // 우상 모서리 캐논: 국회 우상단 (40, 58~59) 기준 확장 -> 시작점 (39, 58)
-      // 좌하 모서리 캐논: 국회 좌하단 (58~59, 40) 기준 확장 -> 시작점 (58, 39)
-      // 우하 모서리 캐논: 국회 우하단 (58~59, 58~59) 기준 확장 -> 시작점 (58, 58)
-      const cannons = [
-        { r: capitolStart - 1, c: capitolStart - 1 }, // 좌상 (39, 39) -> 3x3
-        { r: capitolStart - 1, c: capitolEnd - 2 },   // 우상 (39, 58) -> 3x3
-        { r: capitolEnd - 2, c: capitolStart - 1 },   // 좌하 (58, 39) -> 3x3
-        { r: capitolEnd - 2, c: capitolEnd - 2 }      // 우하 (58, 58) -> 3x3
-      ];
+    let mapSize = 100;
+    let mudSize = 20;
+    let capitolSize = 20;
+    let showCapitol = true;
 
-      function isCannon(r, c) {
-        return cannons.some(can => 
-          r >= can.r && r < can.r + 3 && c >= can.c && c < can.c + 3
-        );
-      }
+    let paletteItems = [];
+    let placedElements = [];
+    let draggedData = null;
 
-      function isCapitol(r, c) {
-        return r >= capitolStart && r < capitolEnd && c >= capitolStart && c < capitolEnd;
-      }
+    function initMap() {
+        if (!gridMap || !mapSizeInput || !mudSizeInput || !capitolSizeInput) return;
 
-      function initMap() {
-        if (!gridMap) return;
+        mapSize = parseInt(mapSizeInput.value) || 100;
+        mudSize = parseInt(mudSizeInput.value) || 20;
+        capitolSize = parseInt(capitolSizeInput.value) || 20;
+        showCapitol = showCapitolCheckbox ? showCapitolCheckbox.checked : true;
+
+        gridMap.style.gridTemplateColumns = `repeat(${mapSize}, 20px)`;
+        gridMap.style.gridTemplateRows = `repeat(${mapSize}, 20px)`;
         gridMap.innerHTML = '';
+
+        const startCapitol = Math.floor((mapSize - capitolSize) / 2);
+        const endCapitol = startCapitol + capitolSize;
+        
+        const mudOffset = Math.floor(mudSize / 2);
+        const startMud = Math.max(0, startCapitol - mudOffset);
+        const endMud = Math.min(mapSize, endCapitol + mudOffset);
+
+        const cannons = [
+            { r: startCapitol - 1, c: startCapitol - 1 },
+            { r: startCapitol - 1, c: endCapitol - 2 },
+            { r: endCapitol - 2, c: startCapitol - 1 },
+            { r: endCapitol - 2, c: endCapitol - 2 }
+        ];
+
+        function isCannon(r, c) {
+            if (!showCapitol) return false;
+            return cannons.some(can => r >= can.r && r < can.r + 3 && c >= can.c && c < can.c + 3);
+        }
+
+        function isCapitol(r, c) {
+            return r >= startCapitol && r < endCapitol && c >= startCapitol && c < endCapitol;
+        }
+
+        function isMud(r, c) {
+            return r >= startMud && r < endMud && c >= startMud && c < endMud && !isCapitol(r, c);
+        }
+
         for (let r = 0; r < mapSize; r++) {
-          for (let c = 0; c < mapSize; c++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            tile.dataset.row = r;
-            tile.dataset.col = c;
+            for (let c = 0; c < mapSize; c++) {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.dataset.row = r;
+                tile.dataset.col = c;
 
-            if (isCapitol(r, c)) {
-              tile.classList.add('capitol');
-              tile.title = "국회 (Capitol 20x20)";
-            }
-            if (isCannon(r, c)) {
-              tile.classList.add('cannon');
-              tile.title = "캐논 (Cannon 3x3)";
-            }
+                if (isCapitol(r, c)) {
+                    tile.classList.add('capitol');
+                    tile.title = "국회 (Capitol)";
+                } else if (isCannon(r, c)) {
+                    tile.classList.add('cannon');
+                    tile.title = "캐논 (Cannon 3x3)";
+                } else if (isMud(r, c)) {
+                    tile.classList.add('mud');
+                    tile.title = "머드 (Mud)";
+                }
 
-            tile.addEventListener('click', () => handleTileClick(r, c));
-            gridMap.appendChild(tile);
-          }
+                tile.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    highlightPreview(r, c, true);
+                });
+
+                tile.addEventListener('dragleave', () => {
+                    clearPreview();
+                });
+
+                tile.addEventListener('drop', (e) => {
+                    clearPreview();
+                    handleTileDrop(e, r, c);
+                });
+
+                gridMap.appendChild(tile);
+            }
         }
-        renderBases();
-      }
+        renderPlacedElements();
+    }
 
-      function handleTileClick(r, c) {
-        for (let dr = 0; dr < 3; dr++) {
-          for (let dc = 0; dc < 3; dc++) {
-            let tr = r + dr;
-            let tc = c + dc;
-            if (tr >= mapSize || tc >= mapSize) {
-              statusEl.textContent = "맵 범위를 벗어납니다!";
-              return;
+    function highlightPreview(startR, startC, isValid) {
+        clearPreview();
+        if (!draggedData) return;
+
+        let canPlace = true;
+        let previewTiles = [];
+
+        // 기지는 3x3, 메모는 가로 1칸 x 세로 1칸으로 체크
+        let checkWidth = draggedData.type === 'memo' ? 1 : draggedData.size;
+        let checkHeight = draggedData.type === 'memo' ? 1 : draggedData.size;
+
+        for (let dr = 0; dr < checkHeight; dr++) {
+            for (let dc = 0; dc < checkWidth; dc++) {
+                let tr = startR + dr;
+                let tc = startC + dc;
+                if (tr >= mapSize || tc >= mapSize) {
+                    canPlace = false;
+                    continue;
+                }
+                const targetTile = document.querySelector(`.tile[data-row="${tr}"][data-col="${tc}"]`);
+                if (targetTile) {
+                    if (draggedData.type === 'base' && (targetTile.classList.contains('capitol') || targetTile.classList.contains('cannon'))) {
+                        canPlace = false;
+                    }
+                    previewTiles.push(targetTile);
+                }
             }
-            if (isCapitol(tr, tc) || isCannon(tr, tc)) {
-              statusEl.textContent = "국회 또는 캐논 영역에는 기지를 배치할 수 없습니다!";
-              return;
-            }
-          }
         }
 
-        const baseName = baseNameInput.value.trim() || "기지";
-        const key = `${r},${c}`;
+        previewTiles.forEach(tile => {
+            tile.classList.add(canPlace ? 'drag-over-valid' : 'drag-over-invalid');
+        });
+    }
 
-        if (placedBases.has(key)) {
-          placedBases.delete(key);
-          statusEl.textContent = `기지가 삭제되었습니다.`;
+    function clearPreview() {
+        document.querySelectorAll('.tile').forEach(tile => {
+            tile.classList.remove('drag-over-valid', 'drag-over-invalid');
+        });
+    }
+
+    if (addBaseBtn) {
+        addBaseBtn.addEventListener('click', () => {
+            const name = newBaseNameInput.value.trim();
+            if (!name) return alert('기지 이름을 입력해주세요.');
+            
+            const item = {
+                id: 'item_' + Date.now(),
+                type: 'base',
+                name: name,
+                color: newBaseColorSelect.value,
+                size: 3 // 기지는 3x3 크기 유지
+            };
+            paletteItems.push(item);
+            newBaseNameInput.value = '';
+            renderPalettes();
+        });
+    }
+
+    if (addMemoBtn) {
+        addMemoBtn.addEventListener('click', () => {
+            const text = newMemoTextInput.value.trim();
+            if (!text) return alert('메모 내용을 입력해주세요.');
+
+            const item = {
+                id: 'item_' + Date.now(),
+                type: 'memo',
+                name: text,
+                color: '#f1c40f',
+                size: 1 // 메모는 1칸 기준
+            };
+            paletteItems.push(item);
+            newMemoTextInput.value = '';
+            renderPalettes();
+        });
+    }
+
+    function renderPalettes() {
+        if (!basePaletteList || !memoPaletteList) return;
+        basePaletteList.innerHTML = '';
+        memoPaletteList.innerHTML = '';
+
+        paletteItems.forEach(item => {
+            const el = document.createElement('div');
+            el.className = 'draggable-item';
+            el.draggable = true;
+            el.textContent = item.name;
+            if (item.type === 'base') {
+                el.style.backgroundColor = item.color;
+                el.style.color = item.color === '#ffffff' ? '#333' : '#fff';
+                basePaletteList.appendChild(el);
+            } else {
+                el.style.backgroundColor = '#f39c12';
+                el.style.color = '#fff';
+                memoPaletteList.appendChild(el);
+            }
+
+            el.addEventListener('dragstart', () => {
+                draggedData = item;
+            });
+        });
+    }
+
+    function handleTileDrop(e, r, c) {
+        e.preventDefault();
+        if (!draggedData) return;
+
+        let checkWidth = draggedData.type === 'memo' ? 1 : draggedData.size;
+        let checkHeight = draggedData.type === 'memo' ? 1 : draggedData.size;
+
+        for (let dr = 0; dr < checkHeight; dr++) {
+            for (let dc = 0; dc < checkWidth; dc++) {
+                let tr = r + dr;
+                let tc = c + dc;
+                if (tr >= mapSize || tc >= mapSize) {
+                    return alert('맵 범위를 벗어납니다!');
+                }
+                const targetTile = document.querySelector(`.tile[data-row="${tr}"][data-col="${tc}"]`);
+                if (targetTile && draggedData.type === 'base' && (targetTile.classList.contains('capitol') || targetTile.classList.contains('cannon'))) {
+                    return alert('국회 또는 캐논 영역에는 기지를 배치할 수 없습니다!');
+                }
+            }
+        }
+
+        const existingIndex = placedElements.findIndex(el => el.id === draggedData.id);
+        if (existingIndex > -1) {
+            placedElements[existingIndex].r = r;
+            placedElements[existingIndex].c = c;
         } else {
-          placedBases.set(key, { name: baseName, r, c });
-          statusEl.textContent = `'${baseName}' 기지가 (${r}, ${c})에 배치되었습니다.`;
+            placedElements.push({
+                ...draggedData,
+                id: 'placed_' + Date.now(),
+                r: r,
+                c: c
+            });
+            paletteItems = paletteItems.filter(i => i.id !== draggedData.id);
+            renderPalettes();
         }
-        renderBases();
-      }
 
-      function renderBases() {
-        document.querySelectorAll('.tile.base').forEach(tile => {
-          tile.classList.remove('base');
-          tile.style.backgroundColor = '';
-          tile.title = '';
-        });
+        renderPlacedElements();
+        draggedData = null;
+    }
 
-        placedBases.forEach((base, key) => {
-          const { name, r, c } = base;
-          for (let dr = 0; dr < 3; dr++) {
-            for (let dc = 0; dc < 3; dc++) {
-              const tile = document.querySelector(`.tile[data-row="${r + dr}"][data-col="${c + dc}"]`);
-              if (tile) {
-                tile.classList.add('base');
-                tile.title = `${name} (3x3)`;
-              }
+    function renderPlacedElements() {
+        document.querySelectorAll('.placed-object').forEach(el => el.remove());
+
+        placedElements.forEach(item => {
+            const startTile = document.querySelector(`.tile[data-row="${item.r}"][data-col="${item.c}"]`);
+            if (!startTile) return;
+
+            const objDiv = document.createElement('div');
+            objDiv.style.top = `${item.r * 20}px`;
+            objDiv.style.left = `${item.c * 20}px`;
+
+            if (item.type === 'memo') {
+                objDiv.className = 'placed-object memo-object';
+            } else {
+                objDiv.className = 'placed-object';
+                objDiv.style.width = `${item.size * 20}px`;
+                objDiv.style.height = `${item.size * 20}px`;
+                objDiv.style.backgroundColor = item.color;
             }
-          }
-        });
-      }
+            
+            objDiv.innerHTML = `
+                <span>${item.name}</span>
+                <div class="delete-overlay">삭제</div>
+            `;
 
-      if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
-          placedBases.clear();
-          renderBases();
-          statusEl.textContent = "모든 기지가 초기화되었습니다.";
-        });
-      }
+            objDiv.querySelector('.delete-overlay').addEventListener('click', (e) => {
+                e.stopPropagation();
+                placedElements = placedElements.filter(el => el.id !== item.id);
+                renderPlacedElements();
+            });
 
-      initMap();
-    });
+            gridMap.appendChild(objDiv);
+        });
+    }
+
+    if (applyMapConfigBtn) applyMapConfigBtn.addEventListener('click', initMap);
+    if (clearAllBtn) {
+        clearAllBtn.addEventListener('click', () => {
+            placedElements = [];
+            paletteItems = [];
+            renderPalettes();
+            renderPlacedElements();
+        });
+    }
+
+    initMap();
+});
