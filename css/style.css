@@ -506,3 +506,11 @@ body {
     background-color: rgba(231, 76, 60, 0.6) !important;
     border: 1px dashed #c0392b !important;
 }
+
+#nigaero-wrap{
+    position: relative;
+}
+
+#nigaero{
+    position: fixed;
+}
